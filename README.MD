@@ -17,7 +17,7 @@ DataSources used:
 
 To Run This Application:
 1. mvn spring:bootrun
-- This will also initialize and build the npm module/FE access point.
+- This will also initialize and build the npm module/FE access point--accessible at localhost:8080. (Might take a second to load)
 
 To Unit Test this Application:
 1. mvn clean test
@@ -32,12 +32,15 @@ General Functionality:
 - Geocode each of the IP into corresponding locations.
 - Map locations on UI.
 - Filter locations based on search preferences.
-- On Click of Marker/Location, present additional information about the IP via an api call to threat info endpoint.
+- On Click of Marker/Location, present additional information about the IP via an api call to threat info endpoint. (Might take a second to load)
 
 
 TODO:
 - Use Gradle instead of Maven.
 - Implement Persistence Layer.
 - Add additional information/API for tracking bad actor IP(s).
+- Improve Response Time on FE
+- Add FE Tests/Responses on Error Codes
+- Cluster Markers for Maps
 
 
