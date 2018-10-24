@@ -1,0 +1,40 @@
+{
+  "name": "hack-map",
+  "version": "0.1.0",
+  "description": "Add locational context to ongoing vulnerablities/exploits/hacks.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:discr3t3/hack.git"
+  },
+  "keywords": [
+    "hack",
+    "map",
+    "spring",
+    "data",
+    "react"
+  ],
+  "author": "Connor Coleman",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/discr3t3/hack/issues"
+  },
+  "homepage": "https://github.com/discr3t3/hack",
+  "dependencies": {
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "rest": "^1.3.1",
+    "google-maps-react": "^2.0.2",
+    "axios": "^0.18.0"
+  },
+  "scripts": {
+    "watch": "webpack --watch -d"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.2",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.0"
+  }
+}
