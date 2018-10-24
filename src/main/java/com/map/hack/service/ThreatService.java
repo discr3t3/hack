@@ -61,6 +61,9 @@ public class ThreatService {
     @Value("${abuse.api.key}")
     private String abuseApiKey;
 
+    @Value("${threat.precache.enabled}")
+    private boolean threatCacheEnabled;
+
     public ThreatService(DatabaseReader databaseReader, RestTemplate restTemplate) {
         this.databaseReader = databaseReader;
         this.restTemplate = restTemplate;
@@ -148,6 +151,8 @@ public class ThreatService {
 
     @PostConstruct
     public void load() { //Pre-cache on start-up;
-        this.getRecentThreats();
+        if (this.threatCacheEnabled) {
+            this.getRecentThreats();
+        }
     }
 }
