@@ -2,4 +2,54 @@ body {
     margin: 0;
 }
 
+#mapContainer {
+    position: relative;
+    height: calc(100vh - 20px);
+}
 
+#map {
+    width: 100%;
+    right: 0;
+    left: unset;
+}
+
+#listContainer {
+    width: 30%;
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background-color: #2d2d2d;
+}
+
+#ipTable {
+    overflow-y: scroll;
+    height: 80%;
+    display: block;
+    width: 100%;
+}
+
+#ipTable tbody {
+    color: white;
+}
+
+#ipTable th {
+    width: 33%;
+}
+
+#ipTable table, th, td {
+    border: 1px solid grey;
+}
+
+.searchBox {
+    padding: 5%;
+}
+
+.searchBox input {
+    height: 30px;
+    width: 60%;
+}
+
+.inputLabel {
+    color: white;
+    margin-right: 5%;
+}
