@@ -1,5 +1,7 @@
 package com.map.hack;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maxmind.geoip2.DatabaseReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -28,5 +30,12 @@ public class HackConfiguration implements WebMvcConfigurer {
     @Bean
     public DatabaseReader databaseReader(@Value("${ip.db.location}") String location) throws IOException {
         return new DatabaseReader.Builder(new File(location)).build();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return mapper;
     }
 }

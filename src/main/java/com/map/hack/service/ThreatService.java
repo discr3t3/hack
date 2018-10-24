@@ -1,5 +1,7 @@
 package com.map.hack.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.map.hack.api.v1.type.AbusedIP;
 import com.map.hack.api.v1.type.IP;
 import com.map.hack.api.v1.type.Location;
@@ -14,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -46,8 +47,9 @@ public class ThreatService {
     public static final String BAD_GUYS_FORMAT = "bad-guys-%1$tY-%1$tm-%1$td.tmp";
     private RestTemplate restTemplate;
     private DatabaseReader databaseReader;
-    private static final ParameterizedTypeReference<List<AbusedIP>> ABUSED_IP =
-            new ParameterizedTypeReference<List<AbusedIP>>(){};
+    private ObjectMapper objectMapper;
+    private static final TypeReference<List<AbusedIP>> ABUSED_IP = new TypeReference<List<AbusedIP>>(){};
+    private static final String ABUSED_ERROR_MAPPING = "Could not Map Object to AbusedIP with Error: %s";
 
     @Value("${tmp.file.storage}")
     private String baseTmpFile;
@@ -64,9 +66,10 @@ public class ThreatService {
     @Value("${threat.precache.enabled}")
     private boolean threatCacheEnabled;
 
-    public ThreatService(DatabaseReader databaseReader, RestTemplate restTemplate) {
+    public ThreatService(DatabaseReader databaseReader, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.databaseReader = databaseReader;
         this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Cacheable("allThreats")
@@ -114,11 +117,11 @@ public class ThreatService {
 
         final String url = String.format(abuseApiUrl, ipAddress, abuseApiKey, totalDays);
         try {
-            ResponseEntity<List<AbusedIP>> response = restTemplate.exchange(
+            ResponseEntity<String> response = restTemplate.exchange(
                 url, HttpMethod.GET,
-                HttpUtils.getDefaultHeader(), ABUSED_IP
+                HttpUtils.getDefaultHeader(), String.class
             );
-            return response.getBody();
+            return this.formatAbusedResponse(response.getBody());
         } catch (Exception exception) {
            LOGGER.info(ResourceNotFoundException.formatMessage(ipAddress, exception));
         }
@@ -147,6 +150,26 @@ public class ThreatService {
         }
 
         return null;
+    }
+
+    private List<AbusedIP> formatAbusedResponse(String response) {
+        //AbusedIP will return an object or a list, adjust here accordingly.
+        if (StringUtils.isEmpty(response)) {
+            return new ArrayList<>();
+        }
+
+        if (response.startsWith("{")) {
+            response = "[" + response + "]";
+        }
+
+        try {
+            return this.objectMapper.readValue(response, ABUSED_IP);
+        } catch (Exception error) {
+            //IOException, JsonParseException, JsonMappingException
+            LOGGER.info(String.format(ABUSED_ERROR_MAPPING, error.toString()));
+        }
+
+        return new ArrayList<>();
     }
 
     @PostConstruct
