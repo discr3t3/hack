@@ -11,7 +11,7 @@ class IPList extends Component{
             <table id="ipTable">
                 <tbody>
                 <tr>
-                    <th>IP Address</th>
+                    <th>IP Threat</th>
                     <th>City</th>
                     <th>Country</th>
                 </tr>
