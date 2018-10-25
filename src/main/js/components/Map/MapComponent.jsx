@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
-import axios from 'axios';
+import { get } from '../../utils/request';
 import IPList from "../IP/IPList";
 import Search from "../Search/Search";
+
+const BASE_API = 'http://localhost:8080/api/v1';
 
 export class MapContainer extends Component {
     constructor(props) {
@@ -16,16 +18,20 @@ export class MapContainer extends Component {
             ips: [],
             ipList: [],
         };
-        axios.get('http://localhost:8080/api/v1/threat/all')
+        get(BASE_API + '/threat/all')
             .then(response => {
-                this.setState({ips: response.data.results, ipList: response.data.results});
+                if (response.data && response.data.results) {
+                    this.setState({ips: response.data.results, ipList: response.data.results});
+                }
             });
     }
 
     onMarkerClick(props, marker, e) {
-        axios.get('http://localhost:8080/api/v1/threat/' + marker.name)
+        get(BASE_API + '/threat/' + marker.name)
             .then(response => {
-                this.setState({ipData: response.data})
+                if (response.data && response.data.results) {
+                    this.setState({ipData: response.data})
+                }
             });
         this.setState({
             selectedPlace: props,
